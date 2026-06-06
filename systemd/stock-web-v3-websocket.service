@@ -1,0 +1,26 @@
+[Unit]
+Description=Stock Web V3 - WebSocket Hub
+After=stock-web-v3.service redis-server.service
+Wants=stock-web-v3.service
+
+[Service]
+Type=simple
+User=stock_app
+Group=stock_app
+WorkingDirectory=/opt/stock-web-v3
+Environment=PATH=/opt/stock-web-v3/venv/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONPATH=/opt/stock-web-v3/src
+Environment=HOME=/opt/stock-web-v3
+
+ExecStart=/opt/stock-web-v3/venv/bin/uvicorn stock_web_v3.websocket.standalone:app --host 127.0.0.1 --port 8001 --no-access-log
+Restart=always
+RestartSec=5
+LimitNOFILE=65536
+
+# Security
+NoNewPrivileges=true
+ProtectHome=false
+ProtectSystem=false
+
+[Install]
+WantedBy=multi-user.target

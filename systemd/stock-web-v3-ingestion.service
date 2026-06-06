@@ -1,0 +1,26 @@
+[Unit]
+Description=Stock Web V3 - Ingestion Worker
+After=redis-server.service postgresql.service
+Wants=redis-server.service postgresql.service
+
+[Service]
+Type=simple
+User=stock_app
+Group=stock_app
+WorkingDirectory=/opt/stock-web-v3
+Environment=PATH=/opt/stock-web-v3/venv/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PYTHONPATH=/opt/stock-web-v3/src
+Environment=HOME=/opt/stock-web-v3
+EnvironmentFile=/opt/stock-web-v3/.env
+
+ExecStart=/opt/stock-web-v3/venv/bin/python /opt/stock-web-v3/ingestion_worker.py
+Restart=on-failure
+RestartSec=30
+
+# Security
+NoNewPrivileges=true
+ProtectHome=false
+ProtectSystem=false
+
+[Install]
+WantedBy=multi-user.target
